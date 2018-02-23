@@ -30,10 +30,11 @@ namespace Capstone.Tests
             {
                 SqlCommand cmd;
                 conn.Open();
-                //cmd = new SqlCommand("INSERT INTO campground VALUES ('100', '100', 'CampTest', '1', '5', '20.00'); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
-                //campground_idx = (int)cmd.ExecuteScalar();
 
-                cmd = new SqlCommand("SELECT COUNT(name) FROM campground;", conn);
+                cmd = new SqlCommand("INSERT INTO campground VALUES ('1', 'CampTest', '1', '5', '20.00'); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
+                campground_idx = (int)cmd.ExecuteScalar();
+
+                cmd = new SqlCommand("SELECT COUNT(name) FROM campground WHERE park_id = 1;", conn);
                 campground_count = (int)cmd.ExecuteScalar();
             }
         }
@@ -48,7 +49,7 @@ namespace Capstone.Tests
         public void GetParkCampGroundTest()
         {
             CampGroundSqlDAL camptest = new CampGroundSqlDAL(dbconnectionString);
-            List<Campground> camp = camptest.GetParkCampGround();
+            List<Campground> camp = camptest.GetParkCampGround(1);
             Assert.IsNotNull(camp);
             Assert.AreEqual(campground_count, camp.Count);
 

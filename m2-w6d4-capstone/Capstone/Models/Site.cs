@@ -4,16 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Capstone
+namespace Capstone.Models
 {
-    class Site
+   public class Site
     {
-        private int Site_id { get; set; }
-        private int Campground_id { get; set; }
-        private int Site_number { get; set; }
-        private int Max_occupancy { get; set; }
-        private bool Accessible { get; set; }
-        private int Max_RV_length { get; set; }
-        private bool Utilities { get; set; }
+        public int Site_id { get; set; }
+        public int Campground_id { get; set; }
+        public int Site_number { get; set; }
+        public int Max_occupancy { get; set; }
+        public bool Accessible { get; set; }
+        public int Max_RV_length { get; set; }
+        public bool Utilities { get; set; }
+
+        public override string ToString()
+        {
+            return Site_number.ToString().PadRight(15) + Max_occupancy.ToString().PadRight(15) + Accessible.ToString().PadRight(15) + Max_RV_length.ToString().PadRight(15) + Utilities.ToString().PadRight(15);
     }
+    }
+
 }

@@ -12,14 +12,15 @@ namespace Capstone.DAL
     public class CampGroundSqlDAL
     {
         private string connectionString;
-        private string SQL_GetCampGrounds = @"SELECT * FROM campground;";
+        private string SQL_GetCampGrounds = @"SELECT * FROM campground WHERE @park_id = park_id;";
 
         public CampGroundSqlDAL(string databaseconnectionString)
         {
             connectionString = databaseconnectionString;
         }
 
-        public List<Campground> GetParkCampGround()
+        //Returns list of campgronds based on park selected
+        public List<Campground> GetParkCampGround(int input)
         {
             List<Campground> output = new List<Campground>();
 
@@ -29,6 +30,7 @@ namespace Capstone.DAL
                 {
                     connection.Open();
                     SqlCommand cmd = new SqlCommand(SQL_GetCampGrounds, connection);
+                    cmd.Parameters.AddWithValue("@park_id", input);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
@@ -54,6 +56,8 @@ namespace Capstone.DAL
             }
             return output;
         }
+
+         
 
     }
 }

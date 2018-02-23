@@ -13,6 +13,9 @@ namespace Capstone
             // App.Config file
             // Use this so that you don't need to copy your connection string all over your code!
             string connectionString = ConfigurationManager.ConnectionStrings["CapstoneDatabase"].ConnectionString;
+
+            ParkReservationSystem_CLI program = new ParkReservationSystem_CLI();
+            program.RunCLI();
         }
     }
 }
