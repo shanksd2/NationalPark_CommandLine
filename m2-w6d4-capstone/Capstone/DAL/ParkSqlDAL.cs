@@ -23,8 +23,17 @@ namespace Capstone.DAL
         {
             ParkSqlDAL toFindID = new ParkSqlDAL(connectionString);
             List<Park> findID = toFindID.ListAllParkNames();
-            Park lookingFor = toFindID.GetParkDetails(findID[input-1].Name);
-            
+            Park lookingFor = new Park();
+            try
+            {
+                lookingFor = toFindID.GetParkDetails(findID[input - 1].Name);
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Invalid input.  Please try again");
+         
+            }
+
             return lookingFor.Park_id;
         }
 

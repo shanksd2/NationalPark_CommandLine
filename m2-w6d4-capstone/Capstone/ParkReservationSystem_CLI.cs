@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Threading;
 using Capstone.Models;
 using Capstone.DAL;
+using System.Data.SqlClient;
 
 namespace Capstone
 {
@@ -28,7 +29,7 @@ namespace Capstone
                 string input = Console.ReadLine();
                 // Assign user input to integer value to pass through proceeding methods
 
-                int.TryParse(input, out this.inputValue);
+                int.TryParse(input, out inputValue);
                 if (input.ToUpper() == "Q")
                 {
                     return;
@@ -75,8 +76,17 @@ namespace Capstone
             Console.Clear();
             ParkSqlDAL parkDetails = new ParkSqlDAL(databaseconnectionString);
             List<Park> listOfParks = parkDetails.ListAllParkNames();
+            Park parkToDetail = new Park();
+            try
+            {
 
-            Park parkToDetail = parkDetails.GetParkDetails(listOfParks[inputValue - 1].Name.ToString());
+                parkToDetail = parkDetails.GetParkDetails(listOfParks[input - 1].Name.ToString());
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Invalid input.  Please try again.");
+                return;
+            }
             Console.WriteLine(parkToDetail.ToString());
         }
 
@@ -114,30 +124,25 @@ namespace Capstone
         }
 
 
-
-        public int GetSiteID(int site_number, int camp_id)
-        {
-            SiteSqlDAL checkForID = new SiteSqlDAL(databaseconnectionString);
-            List<Site> findID = checkForID.ListCampGroundSites(camp_id);
-            int siteID = 0;
-            foreach (Site s in findID)
-            {
-                if (s.Site_number == site_number)
-                {
-                    siteID = s.Site_id;
-                }
-            }
-            return siteID;
-        }
-
         public void PrintParkCampGround(int input)
         {
             Console.Clear();
             CampGroundSqlDAL campGroundsinPark = new CampGroundSqlDAL(databaseconnectionString);
             ParkSqlDAL park = new ParkSqlDAL(databaseconnectionString);
-            List<Campground> printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(input));
+            List<Campground> printCampGrounds = new List<Campground>();
+            try
+            {
 
-            Console.WriteLine("\tName".PadRight(25) + "Open".PadRight(13) + "Close".PadRight(13) + "Daily Fee");
+                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(input));
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Invalid input.  Please try again.");
+                return;
+
+            }
+
+            Console.WriteLine("\tName".PadRight(35) + "Open".PadRight(13) + "Close".PadRight(13) + "Daily Fee");
             int count = 0;
             foreach (Campground campground in printCampGrounds)
             {
@@ -149,6 +154,7 @@ namespace Capstone
 
         public void CampGroundView()
         {
+            
             Console.WriteLine();
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1) Search for Available Reservation");
@@ -170,8 +176,10 @@ namespace Capstone
                         return;
                     default:
                         Console.WriteLine("Invalid input. Enter another value:");
+                        makingDecision = false;
                         break;
                 }
+
             }
         }
 
@@ -215,12 +223,34 @@ namespace Capstone
         public virtual void SearchAvailableSites(int camp_id, string arrival, string departure)
         {
 
-            Console.Clear();
+            // Console.Clear();
             SiteSqlDAL reservationAvailibility = new SiteSqlDAL(databaseconnectionString);
-            List<Site> availableSites = reservationAvailibility.ReservationAvailable(camp_id, arrival, departure);
+            List<Site> availableSites = new List<Site>();
+            try
+            {
+                availableSites = reservationAvailibility.ReservationAvailable(camp_id, arrival, departure);
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Invalid input.  Please try again.");
+                Console.WriteLine();
+                return;
+            }
             CampGroundSqlDAL campGroundsinPark = new CampGroundSqlDAL(databaseconnectionString);
             ParkSqlDAL park = new ParkSqlDAL(databaseconnectionString);
-            List<Campground> printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(inputValue));
+            List<Campground> printCampGrounds = new List<Campground>();
+            try
+            {
+                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(inputValue));
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Invalid Input.  Please try again.");
+                Console.WriteLine();
+                return;
+            }
 
             Console.WriteLine("Results Matching Your Search Criteria");
             if (reservationAvailibility.AnyAvailable(availableSites))
@@ -256,12 +286,34 @@ namespace Capstone
         public void SearchAvailableSites(string arrival, string departure, int park_id)
         {
 
-            Console.Clear();
+            //Console.Clear();
             SiteSqlDAL reservationAvailibility = new SiteSqlDAL(databaseconnectionString);
-            List<Site> availableSites = reservationAvailibility.ReservationAvailable(arrival, departure, inputValue);
+            List<Site> availableSites = new List<Site>();
+            try
+            {
+                availableSites = reservationAvailibility.ReservationAvailable(arrival, departure, inputValue);
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Invalid input.  Please try again.");
+                Console.WriteLine();
+                return;
+            }
             CampGroundSqlDAL campGroundsinPark = new CampGroundSqlDAL(databaseconnectionString);
             ParkSqlDAL park = new ParkSqlDAL(databaseconnectionString);
-            List<Campground> printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(inputValue));
+            List<Campground> printCampGrounds = new List<Campground>();
+            try
+            {
+                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(inputValue));
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Invalid input.  Please try again.");
+                Console.WriteLine();
+                return;
+            }
 
 
             Console.WriteLine("Results Matching Your Search Criteria");
@@ -288,6 +340,7 @@ namespace Capstone
 
         public void ReservationConfirmation(int camp_id, string arrivalDate, string departureDate)
         {
+            SiteSqlDAL site = new SiteSqlDAL(databaseconnectionString);
             ReservationSqlDAL bookReservation = new ReservationSqlDAL(databaseconnectionString);
             Console.WriteLine();
             Console.Write("Which site should be reserved? (enter 0 to cancel)  ");
@@ -301,7 +354,7 @@ namespace Capstone
             Console.WriteLine();
             Console.Write("Under what name should the reservation be held?  ");
             string inputName = Console.ReadLine();
-            bookReservation.MakeReservation(InputValue, GetSiteID(siteInputValue, camp_id), inputName, arrivalDate, departureDate);
+            bookReservation.MakeReservation(InputValue, site.GetSiteID(siteInputValue, camp_id), inputName, arrivalDate, departureDate);
             string reservationID = bookReservation.GetReservationId(inputName);
             Thread.Sleep(2000);
             Console.WriteLine();
@@ -311,6 +364,7 @@ namespace Capstone
 
         public void ReservationConfirmation(string arrivalDate, string departureDate, int camp_id)
         {
+            SiteSqlDAL site = new SiteSqlDAL(databaseconnectionString);
             ReservationSqlDAL bookReservation = new ReservationSqlDAL(databaseconnectionString);
             Console.WriteLine();
             Console.Write("Which campground should be reserved? (enter 0 to cancel)  ");
@@ -330,10 +384,15 @@ namespace Capstone
             }
             int siteInputValue = 0;
             int.TryParse(siteInput, out siteInputValue);
+
+
+
+
+
             Console.WriteLine();
             Console.Write("Under what name should the reservation be held?  ");
             string inputName = Console.ReadLine();
-            bookReservation.MakeReservation(InputValue, GetSiteID(siteInputValue, camp_id), inputName, arrivalDate, departureDate);
+            bookReservation.MakeReservation(InputValue, site.GetSiteID(siteInputValue, camp_id), inputName, arrivalDate, departureDate);
             string reservationID = bookReservation.GetReservationId(inputName);
             Thread.Sleep(2000);
             Console.WriteLine();

@@ -18,7 +18,7 @@ namespace Capstone.Models
 
         public override string ToString()
         {
-            return Name.PadRight(24) + MonthConversion(Open_from_mm).PadRight(13) + MonthConversion(Open_to_mm).PadRight(13) + Daily_fee.ToString("C2");
+            return Name.PadRight(35) + MonthConversion(Open_from_mm).PadRight(13) + MonthConversion(Open_to_mm).PadRight(13) + Daily_fee.ToString("C2");
         }
 
         public static string MonthConversion(int month)

@@ -35,6 +35,21 @@ namespace Capstone.DAL
             connectionString = databaseconnectionString;
         }
 
+        public int GetSiteID(int site_number, int camp_id)
+        {
+            SiteSqlDAL checkForID = new SiteSqlDAL(connectionString);
+            List<Site> findID = checkForID.ListCampGroundSites(camp_id);
+            int siteID = 0;
+            foreach (Site s in findID)
+            {
+                if (s.Site_number == site_number)
+                {
+                    siteID = s.Site_id;
+                }
+            }
+            return siteID;
+        }
+
         public List<Site> ListCampGroundSites(int input)
         {
             List<Site> sitesInCamp = new List<Site>();
