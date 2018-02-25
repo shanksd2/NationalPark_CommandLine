@@ -19,6 +19,16 @@ namespace Capstone.DAL
             connectionString = databaseconnectionString;
         }
 
+        public int GetParkID(int input)
+        {
+            ParkSqlDAL toFindID = new ParkSqlDAL(connectionString);
+            List<Park> findID = toFindID.ListAllParkNames();
+            Park lookingFor = toFindID.GetParkDetails(findID[input-1].Name);
+            
+            return lookingFor.Park_id;
+        }
+
+
         public List<Park> ListAllParkNames()
         {
             List<Park> output = new List<Park>();
