@@ -18,8 +18,6 @@ namespace Capstone
         public bool menuInComplete = true;
         public void RunCLI()
         {
-            int inputValue = 0;
-
             while (true)
             {
                 Console.Clear();
