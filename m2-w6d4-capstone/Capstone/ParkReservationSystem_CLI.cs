@@ -79,7 +79,6 @@ namespace Capstone
             Park parkToDetail = new Park();
             try
             {
-
                 parkToDetail = parkDetails.GetParkDetails(listOfParks[input - 1].Name.ToString());
             }
             catch (SqlException ex)
@@ -109,7 +108,7 @@ namespace Capstone
                 switch (menuInput)
                 {
                     case 1:
-                        PrintParkCampGround(input);
+                        PrintParkCampGround(InputValue);
                         wegood = false;
                         break;
                     case 2:
