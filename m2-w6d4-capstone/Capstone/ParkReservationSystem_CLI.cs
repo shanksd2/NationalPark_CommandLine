@@ -106,7 +106,7 @@ namespace Capstone
                 switch (menuInput)
                 {
                     case 1:
-                        PrintParkCampGround(InputValue);
+                        PrintParkCampGround(input);
                         wegood = false;
                         break;
                     case 2:
@@ -121,7 +121,6 @@ namespace Capstone
                 }
             }
         }
-
 
         public void PrintParkCampGround(int input)
         {
@@ -195,10 +194,8 @@ namespace Capstone
                 int.TryParse(campgroundString, out campgroundInput);
                 Console.Write("Please enter desired arrival date. _/_/__  ");
                 arrivalDateString = Console.ReadLine();
-
                 Console.Write("Please enter desired departure date. _/_/__  ");
                 departureDateString = Console.ReadLine();
-
                 SearchAvailableSites(campgroundInput, arrivalDateString, departureDateString);
             }
             Console.ReadLine();
@@ -244,10 +241,10 @@ namespace Capstone
                 Console.WriteLine();
                 return;
             }
-
-            Console.WriteLine("Results Matching Your Search Criteria");
+            Console.WriteLine();
             if (reservationAvailibility.AnyAvailable(availableSites))
             {
+                Console.WriteLine("Results Matching Your Search Criteria");
                 Console.WriteLine("Site No.".PadRight(15) + "Max Occup.".PadRight(15) + "Accessible?".PadRight(15) + "Max RV Length".PadRight(15) + "Utility".PadRight(15) + "Cost".PadRight(15));
 
                 foreach (Site s in availableSites)
@@ -276,6 +273,7 @@ namespace Capstone
                 }
             }
         }
+
         public void SearchAvailableSites(string arrival, string departure, int park_id)
         {
             //Console.Clear();
@@ -306,10 +304,9 @@ namespace Capstone
                 Console.WriteLine();
                 return;
             }
-
-
+            Console.WriteLine();
             Console.WriteLine("Results Matching Your Search Criteria");
-            Console.WriteLine("CampGround".PadRight(25) + "Site No.".PadRight(15) + "Max Occup.".PadRight(15) + "Accessible?".PadRight(15) + "Max RV Length".PadRight(15) + "Utility".PadRight(15) + "Cost".PadRight(15));
+            Console.WriteLine("CampGround".PadRight(32) + "Site No.".PadRight(15) + "Max Occup.".PadRight(15) + "Accessible?".PadRight(15) + "Max RV Length".PadRight(15) + "Utility".PadRight(15) + "Cost".PadRight(15));
 
             int camp_id = 0;
             foreach (Site s in availableSites)
@@ -323,7 +320,7 @@ namespace Capstone
                         camp_id = camp.Campground_id;
                     }
                 }
-                Console.WriteLine((camp_id).ToString().PadRight(15) + (campName).PadRight(25) + s.ToString() + reservationAvailibility.PrintCost(s, arrival, departure));
+                Console.WriteLine((campName + " ID:" + (camp_id).ToString()).PadRight(32) + s.ToString() + reservationAvailibility.PrintCost(s, arrival, departure));
             }
             ReservationConfirmation(arrival, departure, camp_id);
             Console.ReadLine();

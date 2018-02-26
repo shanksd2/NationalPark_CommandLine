@@ -19,7 +19,7 @@ namespace Capstone.Models
 
         public override string ToString()
         {
-            return Name + "\nLocation:" + Location.ToString().PadLeft(21) + "\nEstablished:\t" + Establish_date.ToString("d").PadLeft(18)
+            return Name + "\nLocation:" + Location.ToString().PadLeft(20) + "\nEstablished:\t" + Establish_date.ToString("d").PadLeft(19)
                    + "\nArea:" + Area.ToString("N0").PadLeft(26) + "\nAnnual Visitors:" + Visitors.ToString("N0").PadLeft(18); 
         }
 
