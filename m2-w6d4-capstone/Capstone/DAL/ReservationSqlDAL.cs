@@ -23,7 +23,6 @@ namespace Capstone.DAL
         public List<Reservation> GetReservationsFromCampGround(int input)
         {
             List<Reservation> existingReservations = new List<Reservation>();
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))

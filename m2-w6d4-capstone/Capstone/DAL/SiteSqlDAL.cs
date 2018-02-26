@@ -19,7 +19,8 @@ namespace Capstone.DAL
                                             WHERE (campground.park_id = @park_id)
                                             AND (reservation.from_date NOT BETWEEN @startDate AND @endDate)
                                             AND (reservation.to_date NOT BETWEEN @startDate AND @endDate)
-                                            AND (@startDate NOT BETWEEN reservation.from_date AND reservation.to_date) AND (@endDate NOT BETWEEN reservation.from_date AND reservation.to_date)";
+                                            AND (@startDate NOT BETWEEN reservation.to_date AND reservation.from_date)
+                                            AND (@endDate NOT BETWEEN reservation.to_date AND reservation.from_date)";
         private string SQL_PrintPrice = @"Select daily_fee From campground join site on site.campground_id = campground.campground_id where site.campground_id = @campground_id;";
         private string SQL_Availibility = @"SELECT DISTINCT TOP 5(site.site_id), site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities, campground.open_from_mm, campground.open_to_mm, campground.daily_fee 
                                             FROM site
@@ -28,7 +29,8 @@ namespace Capstone.DAL
                                             WHERE (site.campground_id = @campground_id)
                                             AND (reservation.from_date NOT BETWEEN @startDate AND @endDate)
                                             AND (reservation.to_date NOT BETWEEN @startDate AND @endDate)
-                                            AND (@startDate NOT BETWEEN reservation.from_date AND reservation.to_date) AND (@endDate NOT BETWEEN reservation.from_date AND reservation.to_date)";
+                                            AND (@startDate NOT BETWEEN reservation.from_date AND reservation.to_date)
+                                            AND (@endDate NOT BETWEEN reservation.from_date AND reservation.to_date)";
 
         public SiteSqlDAL(string databaseconnectionString)
         {
