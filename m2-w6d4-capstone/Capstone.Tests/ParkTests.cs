@@ -25,7 +25,7 @@ namespace Capstone.Tests
         public void Initialize()
         {
             tran = new TransactionScope();
-
+            
             using (SqlConnection conn = new SqlConnection(dbconnectionString))
             {
                 SqlCommand cmd;
