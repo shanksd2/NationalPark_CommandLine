@@ -91,6 +91,13 @@ namespace Capstone.DAL
             }
         }
 
+        /// <summary>
+        /// Reservation Availability by Campground
+        /// </summary>
+        /// <param name="camp_id"></param>
+        /// <param name="date1"></param>
+        /// <param name="date2"></param>
+        /// <returns></returns>
         public List<Site> ReservationAvailable(int camp_id, string date1, string date2)
         {
             SiteSqlDAL reservationLookUp = new SiteSqlDAL(connectionString);
@@ -130,6 +137,13 @@ namespace Capstone.DAL
             }
         }
 
+        /// <summary>
+        /// Reservation Availability by Park
+        /// </summary>
+        /// <param name="date1"></param>
+        /// <param name="date2"></param>
+        /// <param name="park_id"></param>
+        /// <returns></returns>
         public List<Site> ReservationAvailable(string date1, string date2, int park_id)
         {
             SiteSqlDAL reservationLookUp = new SiteSqlDAL(connectionString);
