@@ -19,33 +19,36 @@ namespace Capstone.Tests
         private TransactionScope tran;
         private string dbconnectionString = ConfigurationManager.ConnectionStrings["CapstoneDatabase"].ConnectionString;
 
-
+        private int park_id;
         private int site_id;
         private int campground_idx;
 
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            tran = new TransactionScope();
+        //[TestInitialize]
+        //public void Initialize()
+        //{
+        //    tran = new TransactionScope();
 
-            using (SqlConnection conn = new SqlConnection(dbconnectionString))
-            {
-                SqlCommand cmd;
-                conn.Open();
-                cmd = new SqlCommand("INSERT INTO site VALUES ('1', '1000', '1000', 'false', '9', 'true'); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
-                site_id = (int)cmd.ExecuteScalar();
+        //    using (SqlConnection conn = new SqlConnection(dbconnectionString))
+        //    {
+        //        SqlCommand cmd;
+        //        conn.Open();
+        //        cmd = new SqlCommand("INSERT INTO park VALUES ('test_park', 'test_location', '2018-2-2', 300, 1, 'This is a Test Description'); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
+        //        cmd.ExecuteNonQuery();
 
-                cmd = new SqlCommand("INSERT INTO campground VALUES ('1', 'CampTest', '1', '5', '20.00'); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
-                campground_idx = (int)cmd.ExecuteScalar();
-            }
-        }
+        //        cmd = new SqlCommand("INSERT INTO campground VALUES (1000, 'CampTest', 1, 5, 20.00); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
+        //        campground_idx = (int)cmd.ExecuteScalar();
 
-        [TestCleanup]
-        public void CleanUp()
-        {
-            tran.Dispose();
-        }
+        //        cmd = new SqlCommand("INSERT INTO site VALUES (campground_idx, 1000, 1000, 0, 9, 1); SELECT CAST(SCOPE_IDENTITY() as INT);", conn);
+        //        site_id = (int)cmd.ExecuteScalar();
+        //    }
+        //}
+
+        //[TestCleanup]
+        //public void CleanUp()
+        //{
+        //    tran.Dispose();
+        //}
 
         [TestMethod]
         public void GetSiteID()
@@ -59,8 +62,8 @@ namespace Capstone.Tests
             int testSite2 = siteSqlDAL.GetSiteID(12, 2);
             Assert.AreEqual(24, testSite2, "for CG 2, SN 12");
 
-            int testSite3 = siteSqlDAL.GetSiteID(1, 5);
-            Assert.AreEqual(45, testSite3, "for CG 5, SN 1");
+            //int testSite3 = siteSqlDAL.GetSiteID(1000, 1000);
+            //Assert.AreEqual(45, testSite3, "for CG 1000, SN 1000");
         }
 
         [TestMethod]
@@ -113,13 +116,18 @@ namespace Capstone.Tests
 
             testListSites = testSite.ReservationAvailable("3/3/2018", "3/5/2018", 3);
             Assert.AreEqual(0, testListSites.Count);
-
         }
 
         [TestMethod]
         public void ReservationPerCampground()
         {
+            SiteSqlDAL testSite = new SiteSqlDAL(dbconnectionString);
+            List<Site> testListSites = new List<Site>();
+            testListSites = testSite.ReservationAvailable("3/3/2018", "3/5/2018", 2);
+            Assert.AreNotEqual(0, testListSites.Count);
 
+            testListSites = testSite.ReservationAvailable("3/3/2018", "3/5/2018", 3);
+            Assert.AreEqual(0, testListSites.Count);
         }
     }
 }
