@@ -58,6 +58,7 @@ namespace Capstone.Tests
 
             int testSite2 = siteSqlDAL.GetSiteID(12, 2);
             Assert.AreEqual(24, testSite2, "for CG 2, SN 12");
+
             int testSite3 = siteSqlDAL.GetSiteID(1, 5);
             Assert.AreEqual(45, testSite3, "for CG 5, SN 1");
         }
@@ -91,16 +92,34 @@ namespace Capstone.Tests
 
             string siteCost = siteSqlDAL.PrintCost(testSiteList[0], "3/3/2018", "3/5/2018");
             Assert.AreEqual("$60.00", siteCost);
-            
+
         }
 
         [TestMethod]
         public void AnyAvailable()
         {
             SiteSqlDAL siteSqlDAL = new SiteSqlDAL(dbconnectionString);
-            List<Site> testSiteList = siteSqlDAL.ReservationAvailable(4,"3/3/2018", "3/5/2018");
+            List<Site> testSiteList = siteSqlDAL.ReservationAvailable(4, "3/3/2018", "3/5/2018");
             Assert.AreNotEqual(testSiteList.Count, 0);
         }
 
+        [TestMethod]
+        public void ParkwideReservation()
+        {
+            SiteSqlDAL testSite = new SiteSqlDAL(dbconnectionString);
+            List<Site> testListSites = new List<Site>();
+            testListSites = testSite.ReservationAvailable("3/3/2018", "3/5/2018", 2);
+            Assert.AreNotEqual(0, testListSites.Count);
+
+            testListSites = testSite.ReservationAvailable("3/3/2018", "3/5/2018", 3);
+            Assert.AreEqual(0, testListSites.Count);
+
+        }
+
+        [TestMethod]
+        public void ReservationPerCampground()
+        {
+
+        }
     }
 }
