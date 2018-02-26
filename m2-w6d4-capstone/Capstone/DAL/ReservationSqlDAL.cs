@@ -13,7 +13,7 @@ namespace Capstone.DAL
         private string connectionString;
         private string SQL_GetReservation = @"SELECT * FROM reservation where @name = name";
         private string SQL_BookReservation = @"INSERT INTO reservation VALUES (@site_id, @name, @arrivalDate, @departureDate, @createDate);";
-        private string SQL_ShowCampReservations = @"SELECT * FROM reservation JOIN site on reservation.site_id = site.site_id Join campground on site.campground_id = campground.campground_id WHERE @campgroud_id = campground_id";
+        private string SQL_ShowCampReservations = @"SELECT * FROM reservation JOIN site on reservation.site_id = site.site_id Join campground on site.campground_id = campground.campground_id WHERE @campground_id = campground_id";
 
         public ReservationSqlDAL(string databaseconnectionString)
         {

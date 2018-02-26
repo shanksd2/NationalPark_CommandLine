@@ -88,6 +88,8 @@ namespace Capstone
                 return;
             }
             Console.WriteLine(parkToDetail.ToString());
+            Console.WriteLine();
+            Park.WrapText(parkToDetail);
         }
 
         public void ParkMenu(int input)
@@ -132,16 +134,13 @@ namespace Capstone
             List<Campground> printCampGrounds = new List<Campground>();
             try
             {
-
                 printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(input));
             }
             catch (SqlException ex)
             {
                 Console.WriteLine("Invalid input.  Please try again.");
                 return;
-
             }
-
             Console.WriteLine("\tName".PadRight(35) + "Open".PadRight(13) + "Close".PadRight(13) + "Daily Fee");
             int count = 0;
             foreach (Campground campground in printCampGrounds)
@@ -153,8 +152,7 @@ namespace Capstone
         }
 
         public void CampGroundView()
-        {
-            
+        {  
             Console.WriteLine();
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1) Search for Available Reservation");
@@ -179,7 +177,6 @@ namespace Capstone
                         makingDecision = false;
                         break;
                 }
-
             }
         }
 
@@ -222,7 +219,6 @@ namespace Capstone
 
         public virtual void SearchAvailableSites(int camp_id, string arrival, string departure)
         {
-
             // Console.Clear();
             SiteSqlDAL reservationAvailibility = new SiteSqlDAL(databaseconnectionString);
             List<Site> availableSites = new List<Site>();
@@ -285,7 +281,6 @@ namespace Capstone
         }
         public void SearchAvailableSites(string arrival, string departure, int park_id)
         {
-
             //Console.Clear();
             SiteSqlDAL reservationAvailibility = new SiteSqlDAL(databaseconnectionString);
             List<Site> availableSites = new List<Site>();
@@ -323,7 +318,6 @@ namespace Capstone
             foreach (Site s in availableSites)
             {
                 string campName = string.Empty;
-
                 foreach (Campground camp in printCampGrounds)
                 {
                     if (camp.Campground_id == s.Campground_id)
@@ -384,10 +378,6 @@ namespace Capstone
             }
             int siteInputValue = 0;
             int.TryParse(siteInput, out siteInputValue);
-
-
-
-
 
             Console.WriteLine();
             Console.Write("Under what name should the reservation be held?  ");
