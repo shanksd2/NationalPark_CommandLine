@@ -8,7 +8,7 @@ using Capstone.Models;
 
 namespace Capstone.DAL
 {
-    class SiteSqlDAL
+    public class SiteSqlDAL
     {
         private string connectionString;
         private string SQL_GetSites = @"SELECT * FROM site WHERE @campground_id = campground_id";
@@ -50,6 +50,11 @@ namespace Capstone.DAL
             return siteID;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input">input is campground_id</param>
+        /// <returns></returns>
         public List<Site> ListCampGroundSites(int input)
         {
             List<Site> sitesInCamp = new List<Site>();

@@ -54,5 +54,14 @@ namespace Capstone.Tests
             Assert.AreEqual(campground_count, camp.Count);
 
         }
+
+        [TestMethod]
+        public void MonthConversion()
+        {
+            int month = 12;
+            Assert.AreEqual("December", Campground.MonthConversion(month));
+            int month2 = 3;
+            Assert.AreEqual("March", Campground.MonthConversion(month2));
+        }
     }
 }
