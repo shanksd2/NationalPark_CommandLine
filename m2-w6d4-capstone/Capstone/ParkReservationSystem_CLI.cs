@@ -51,7 +51,11 @@ namespace Capstone
 
         public void PrintHeader()
         {
-            Console.WriteLine("National Park Database - Reservation System!");
+            Console.WriteLine("* * * * * * * * * * * * * * * * * * * * * * * * *");
+            Console.WriteLine("*                                               *");
+            Console.WriteLine("*  National Park Database - Reservation System  *");
+            Console.WriteLine("*                                               *");
+            Console.WriteLine("* * * * * * * * * * * * * * * * * * * * * * * * *");
         }
 
         public void PrintMainMenu()

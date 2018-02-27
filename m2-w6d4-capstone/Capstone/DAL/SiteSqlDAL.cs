@@ -12,15 +12,23 @@ namespace Capstone.DAL
     {
         private string connectionString;
         private string SQL_GetSites = @"SELECT * FROM site WHERE @campground_id = campground_id";
-        private string SQL_AvailibilityEntirePark = @"SELECT DISTINCT (site.site_id), site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities, campground.open_from_mm, campground.open_to_mm, campground.daily_fee 
-                                            FROM site
-                                            INNER JOIN reservation ON site.site_id = reservation.site_id
-                                            INNER JOIN campground ON site.campground_id = campground.campground_id
-                                            WHERE (campground.park_id = @park_id)
-                                            AND (reservation.from_date NOT BETWEEN @startDate AND @endDate)
-                                            AND (reservation.to_date NOT BETWEEN @startDate AND @endDate)
-                                            AND (@startDate NOT BETWEEN reservation.to_date AND reservation.from_date)
-                                            AND (@endDate NOT BETWEEN reservation.to_date AND reservation.from_date)";
+        //private string SQL_AvailibilityEntirePark = @"SELECT DISTINCT (site.site_id), site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities, campground.open_from_mm, campground.open_to_mm, campground.daily_fee 
+        //                                    FROM site
+        //                                    INNER JOIN reservation ON site.site_id = reservation.site_id
+        //                                    INNER JOIN campground ON site.campground_id = campground.campground_id
+        //                                    WHERE (campground.park_id = @park_id)
+        //                                    AND (reservation.from_date NOT BETWEEN @startDate AND @endDate)
+        //                                    AND (reservation.to_date NOT BETWEEN @startDate AND @endDate)
+        //                                    AND (@startDate NOT BETWEEN reservation.to_date AND reservation.from_date)
+        //                                    AND (@endDate NOT BETWEEN reservation.to_date AND reservation.from_date)";
+        private string SQL_AvailibilityEntirePark = @"Select distinct TOP 5 * from site
+                                                    join campground on site.campground_id = campground.campground_id
+                                                    join park on campground.park_id = park.park_id
+                                                    where park.park_id = @park_id
+                                                    and site_id not in
+                                                    (select site.site_id from site
+                                                    join reservation on reservation.site_id = site.site_id
+                                                    where @endDate > reservation.from_date and @startDate<reservation.to_date) order by daily_fee";
         private string SQL_PrintPrice = @"Select daily_fee From campground join site on site.campground_id = campground.campground_id where site.campground_id = @campground_id;";
         private string SQL_Availibility = @"SELECT DISTINCT TOP 5(site.site_id), site.campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities, campground.open_from_mm, campground.open_to_mm, campground.daily_fee 
                                             FROM site
@@ -31,6 +39,13 @@ namespace Capstone.DAL
                                             AND (reservation.to_date NOT BETWEEN @startDate AND @endDate)
                                             AND (@startDate NOT BETWEEN reservation.from_date AND reservation.to_date)
                                             AND (@endDate NOT BETWEEN reservation.from_date AND reservation.to_date)";
+        //private string SQL_Availibility = @"Select distinct TOP 5 * from site
+        //                                    join campground on site.campground_id = campground.campground_id
+        //                                    where site.campground_id = @campground_id
+        //                                    and site_id not in
+        //                                    (select site.site_id from site
+        //                                    join reservation on reservation.site_id = site.site_id
+        //                                    where @endDate > reservation.from_date and @startDate <reservation.to_date) order by daily_fee";
 
         public SiteSqlDAL(string databaseconnectionString)
         {
