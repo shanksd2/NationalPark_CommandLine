@@ -32,7 +32,6 @@ namespace Capstone.Tests
                 reservation_idx = (int)cmd.ExecuteScalar();
                 
                 //  join site on reservation.site_id = site.site_id and join campground on site.campground_id = campground.campground_id WHERE campground.campground_id = '1'
-
             }
         }
 

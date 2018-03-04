@@ -13,8 +13,6 @@ namespace Capstone
     public class ParkReservationSystem_CLI
     {
         private string databaseconnectionString = ConfigurationManager.ConnectionStrings["CapstoneDatabase"].ConnectionString;
-        private int inputValue = 0;
-        public int InputValue { get; set; }
         public bool menuInComplete = true;
         public void RunCLI()
         {
@@ -23,29 +21,27 @@ namespace Capstone
                 Console.Clear();
                 PrintHeader();
                 PrintMainMenu();
-                menuInComplete = true;
-                string input = Console.ReadLine();
-                // Assign user input to integer value to pass through proceeding methods
 
-                int.TryParse(input, out inputValue);
-                if (input.ToUpper() == "Q")
+                // Assign user input to integer value to pass through proceeding methods
+                int parkSelection = CLI_Helper.GetInteger("==>");
+
+                //Checks if a user input a string value of 'Q'. CLI_HELPER.GetInteger returns 0 in this case.
+                if(parkSelection == 0)
                 {
-                    return;
+                    break;
+                }
+                else if (CLI_Helper.ParkExists(parkSelection))
+                {
+                    Console.WriteLine();
+                    PrintParkDetails(parkSelection);
+                    ParkMenu(parkSelection);
                 }
                 else
                 {
-                    if (CLI_Helper.ParkExists(input))
-                    {
-                        Console.WriteLine();
-                        PrintParkDetails(inputValue);
-                        ParkMenu(inputValue);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid Input, Please Try Again.");
-                        Thread.Sleep(2000);
-                    }
+                    Console.WriteLine("Invalid Input, Please Try Again.");
+                    Thread.Sleep(2000);
                 }
+
             }
         }
 
@@ -93,28 +89,27 @@ namespace Capstone
             Park.WrapText(parkToDetail);
         }
 
-        public void ParkMenu(int input)
+        public void ParkMenu(int parkSelection)
         {
             Console.WriteLine();
             Console.WriteLine("Select a Command");
             Console.WriteLine("1) View Campgrounds");
             Console.WriteLine("2) Search for Reservation");
             Console.WriteLine("3) Return to Previous Screen");
-            Console.WriteLine();
-            int menuInput = 0;
+            Console.WriteLine();            
 
             bool wegood = true;
             while (wegood)
             {
-                int.TryParse(Console.ReadLine(), out menuInput);
+                int menuInput = CLI_Helper.GetInteger("==>");
                 switch (menuInput)
                 {
                     case 1:
-                        PrintParkCampGround(input);
+                        PrintParkCampGround(parkSelection);
                         wegood = false;
                         break;
                     case 2:
-                        ParkWideReservations();
+                        ParkWideReservations(parkSelection);
                         wegood = false;
                         break;
                     case 3:
@@ -126,7 +121,7 @@ namespace Capstone
             }
         }
 
-        public void PrintParkCampGround(int input)
+        public void PrintParkCampGround(int parkSelection)
         {
             Console.Clear();
             CampGroundSqlDAL campGroundsinPark = new CampGroundSqlDAL(databaseconnectionString);
@@ -134,11 +129,11 @@ namespace Capstone
             List<Campground> printCampGrounds = new List<Campground>();
             try
             {
-                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(input));
+                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(parkSelection));
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Invalid input.  Please try again.");
+                Console.WriteLine("Invalid input. Please try again.");
                 return;
             }
             Console.WriteLine("\tName".PadRight(35) + "Open".PadRight(13) + "Close".PadRight(13) + "Daily Fee");
@@ -148,11 +143,11 @@ namespace Capstone
                 Console.WriteLine($"#{count + 1} \t{printCampGrounds[count].ToString()}");
                 count++;
             }
-            CampGroundView();
+            CampGroundView(parkSelection);
         }
 
-        public void CampGroundView()
-        {  
+        public void CampGroundView(int parkSelection)
+        {
             Console.WriteLine();
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1) Search for Available Reservation");
@@ -167,7 +162,7 @@ namespace Capstone
                 switch (decision)
                 {
                     case 1:
-                        ReservationMenu();
+                        ReservationMenu(parkSelection);
                         makingDecision = false;
                         break;
                     case 2:
@@ -180,7 +175,7 @@ namespace Capstone
             }
         }
 
-        public void ReservationMenu()
+        public void ReservationMenu(int parkSelection)
         {
             Console.WriteLine();
             int campgroundInput = 0;
@@ -200,24 +195,24 @@ namespace Capstone
                 arrivalDateString = Console.ReadLine();
                 Console.Write("Please enter desired departure date. _/_/__  ");
                 departureDateString = Console.ReadLine();
-                SearchAvailableSites(campgroundInput, arrivalDateString, departureDateString);
+                SearchAvailableSitesInCampGround(parkSelection, campgroundInput, arrivalDateString, departureDateString);
             }
             Console.ReadLine();
         }
 
-        public void ParkWideReservations()
+        public void ParkWideReservations(int parkSelection)
         {
             Console.WriteLine();
             Console.Write("Please enter desired arrival date. _/_/__   ");
             string arrivalDateString = Console.ReadLine();
             Console.Write("Please enter desired departure date. _/_/__ ");
             string departureDateString = Console.ReadLine();
-            SearchAvailableSites(arrivalDateString, departureDateString, InputValue);
+            SearchAvailableSitesInPark(arrivalDateString, departureDateString, parkSelection);
         }
 
-        public virtual void SearchAvailableSites(int camp_id, string arrival, string departure)
+        public virtual void SearchAvailableSitesInCampGround(int parkSelection, int camp_id, string arrival, string departure)
         {
-            // Console.Clear();
+            Console.Clear();
             SiteSqlDAL reservationAvailibility = new SiteSqlDAL(databaseconnectionString);
             List<Site> availableSites = new List<Site>();
             try
@@ -231,20 +226,7 @@ namespace Capstone
                 Console.WriteLine();
                 return;
             }
-            CampGroundSqlDAL campGroundsinPark = new CampGroundSqlDAL(databaseconnectionString);
-            ParkSqlDAL park = new ParkSqlDAL(databaseconnectionString);
-            List<Campground> printCampGrounds = new List<Campground>();
-            try
-            {
-                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(inputValue));
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("Invalid Input.  Please try again.");
-                Console.WriteLine();
-                return;
-            }
+
             Console.WriteLine();
             if (reservationAvailibility.AnyAvailable(availableSites))
             {
@@ -255,7 +237,7 @@ namespace Capstone
                 {
                     Console.WriteLine(s.ToString() + reservationAvailibility.PrintCost(s, arrival, departure));
                 }
-                ReservationConfirmation(camp_id, arrival, departure);
+                ReservationConfirmation(camp_id, arrival, departure, parkSelection);
             }
             else
             {
@@ -278,14 +260,14 @@ namespace Capstone
             }
         }
 
-        public void SearchAvailableSites(string arrival, string departure, int park_id)
+        public void SearchAvailableSitesInPark(string arrival, string departure, int parkSelection)
         {
-            //Console.Clear();
+            Console.Clear();
             SiteSqlDAL reservationAvailibility = new SiteSqlDAL(databaseconnectionString);
             List<Site> availableSites = new List<Site>();
             try
             {
-                availableSites = reservationAvailibility.ReservationAvailable(arrival, departure, inputValue);
+                availableSites = reservationAvailibility.ReservationAvailable(arrival, departure, parkSelection);
             }
             catch (SqlException ex)
             {
@@ -299,7 +281,7 @@ namespace Capstone
             List<Campground> printCampGrounds = new List<Campground>();
             try
             {
-                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(inputValue));
+                printCampGrounds = campGroundsinPark.GetParkCampGround(park.GetParkID(parkSelection));
             }
             catch (SqlException ex)
             {
@@ -326,27 +308,27 @@ namespace Capstone
                 }
                 Console.WriteLine((campName + " ID:" + (camp_id).ToString()).PadRight(32) + s.ToString() + reservationAvailibility.PrintCost(s, arrival, departure));
             }
-            ReservationConfirmation(arrival, departure, camp_id);
+            ReservationConfirmationForPark(arrival, departure, camp_id, parkSelection);
             Console.ReadLine();
         }
 
-        public void ReservationConfirmation(int camp_id, string arrivalDate, string departureDate)
+        public void ReservationConfirmation(int camp_id, string arrivalDate, string departureDate, int parkSelection)
         {
             SiteSqlDAL site = new SiteSqlDAL(databaseconnectionString);
             ReservationSqlDAL bookReservation = new ReservationSqlDAL(databaseconnectionString);
             Console.WriteLine();
-            Console.Write("Which site should be reserved? (enter 0 to cancel)  ");
-            string siteInput = Console.ReadLine();
-            if (siteInput == "0")
+
+            int siteInput = CLI_Helper.GetInteger("Which site should be reserved? (enter 0 to cancel)  ");
+            if (siteInput == 0)
             {
                 return;
             }
-            int siteInputValue = 0;
-            int.TryParse(siteInput, out siteInputValue);
             Console.WriteLine();
+
             Console.Write("Under what name should the reservation be held?  ");
             string inputName = Console.ReadLine();
-            bookReservation.MakeReservation(InputValue, site.GetSiteID(siteInputValue, camp_id), inputName, arrivalDate, departureDate);
+
+            bookReservation.MakeReservation(parkSelection, site.GetSiteID(siteInput, camp_id), inputName, arrivalDate, departureDate);
             string reservationID = bookReservation.GetReservationId(inputName);
             Thread.Sleep(2000);
             Console.WriteLine();
@@ -354,33 +336,31 @@ namespace Capstone
             Console.ReadLine();
         }
 
-        public void ReservationConfirmation(string arrivalDate, string departureDate, int camp_id)
+        public void ReservationConfirmationForPark(string arrivalDate, string departureDate, int camp_id, int parkSelection)
         {
             SiteSqlDAL site = new SiteSqlDAL(databaseconnectionString);
             ReservationSqlDAL bookReservation = new ReservationSqlDAL(databaseconnectionString);
             Console.WriteLine();
             Console.Write("Which campground should be reserved? (enter 0 to cancel)  ");
-            string campInput = Console.ReadLine();
-            if (campInput == "0")
+            int campInput = CLI_Helper.GetInteger("==>");
+            if (campInput == 0)
             {
                 return;
             }
-            int campInputValue = 0;
-            int.TryParse(campInput, out campInputValue);
+
             Console.WriteLine();
             Console.Write("Which camp site should be reserved? (enter 0 to cancel)   ");
-            string siteInput = Console.ReadLine();
-            if (siteInput == "0")
+            int siteInput = CLI_Helper.GetInteger("==>");
+            if (siteInput == 0)
             {
                 return;
             }
-            int siteInputValue = 0;
-            int.TryParse(siteInput, out siteInputValue);
 
             Console.WriteLine();
             Console.Write("Under what name should the reservation be held?  ");
             string inputName = Console.ReadLine();
-            bookReservation.MakeReservation(InputValue, site.GetSiteID(siteInputValue, camp_id), inputName, arrivalDate, departureDate);
+
+            bookReservation.MakeReservation(parkSelection, site.GetSiteID(siteInput, camp_id), inputName, arrivalDate, departureDate);
             string reservationID = bookReservation.GetReservationId(inputName);
             Thread.Sleep(2000);
             Console.WriteLine();

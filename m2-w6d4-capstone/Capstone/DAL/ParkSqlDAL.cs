@@ -26,7 +26,7 @@ namespace Capstone.DAL
             Park lookingFor = new Park();
             try
             {
-                lookingFor = toFindID.GetParkDetails(findID[input - 1].Name);
+                lookingFor = toFindID.GetParkDetails(findID[input-1].Name);
             }
             catch (SqlException ex)
             {

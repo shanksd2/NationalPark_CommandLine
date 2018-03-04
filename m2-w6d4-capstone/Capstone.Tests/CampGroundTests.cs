@@ -52,7 +52,6 @@ namespace Capstone.Tests
             List<Campground> camp = camptest.GetParkCampGround(1);
             Assert.IsNotNull(camp);
             Assert.AreEqual(campground_count, camp.Count);
-
         }
 
         [TestMethod]

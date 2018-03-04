@@ -54,7 +54,6 @@ namespace Capstone.Tests
 
             Assert.IsNotNull(testPark);
             Assert.AreEqual(park_num, testPark.Count);
-
         }
 
         [TestMethod]
@@ -67,7 +66,6 @@ namespace Capstone.Tests
 
             Assert.IsNotNull(testPark);
             Assert.AreEqual("test_location", testPark.Location);
-
         }
     }
 }

@@ -60,7 +60,6 @@ namespace Capstone.DAL
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-
                     SqlCommand cmd = new SqlCommand(SQL_BookReservation, connection);
                     cmd.Parameters.AddWithValue("@site_id", site_id);
                     cmd.Parameters.AddWithValue("@name", reserveName);
@@ -94,7 +93,6 @@ namespace Capstone.DAL
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-
                     SqlCommand cmd = new SqlCommand(SQL_GetReservation, connection);
                     cmd.Parameters.AddWithValue("@name", name);
                     connection.Open();

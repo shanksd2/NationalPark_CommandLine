@@ -12,15 +12,13 @@ namespace Capstone
     public class CLI_Helper
     {
 
-        public static bool ParkExists(string input)
+        public static bool ParkExists(int input)
         {
             string databaseconnectionString = ConfigurationManager.ConnectionStrings["CapstoneDatabase"].ConnectionString;
-
-            int inputValue = 0;
-            int.TryParse(input, out inputValue);
+            
             ParkSqlDAL doesParkExist = new ParkSqlDAL(databaseconnectionString);
             List<Park> parksToCheck = doesParkExist.ListAllParkNames();
-            if (inputValue <= parksToCheck.Count)
+            if (input <= parksToCheck.Count)
             {
                 return true;
             }
@@ -34,7 +32,12 @@ namespace Capstone
 
             do
             {
-                if (numberOfAttempts > 0)
+                if(numberOfAttempts > 0 && userInput.ToUpper() == "Q")
+                {
+                    userInput = "0";
+                    break;
+                }
+                else if (numberOfAttempts > 0)
                 {
                     Console.WriteLine("Invalid input format. Please try again");
                 }
@@ -46,7 +49,6 @@ namespace Capstone
             while (!int.TryParse(userInput, out intValue));
 
             return intValue;
-
         }
 
 
